@@ -3,7 +3,9 @@ const router = express.Router();
 
 const projects = require("../../data/helpers/projectModel");
 
-router.get("/:id", (req, res) => {
+const { validateProjectId } = require("../../middleware/project");
+
+router.get("/:id", validateProjectId(), (req, res) => {
   projects
     .get(req.params.id)
     .then((project) => {
@@ -35,7 +37,7 @@ router.post("/", (req, res) => {
     });
 });
 
-router.put("/:id", (req, res) => {
+router.put("/:id", validateProjectId(), (req, res) => {
   projects
     .update(req.params.id, req.body)
     .then((project) => {
@@ -46,7 +48,7 @@ router.put("/:id", (req, res) => {
     });
 });
 
-router.delete("/:id", (req, res) => {
+router.delete("/:id", validateProjectId(), (req, res) => {
   projects
     .remove(req.params.id)
     .then((project) => {

@@ -3,6 +3,8 @@ const router = express.Router();
 
 const actions = require("../../data/helpers/actionModel");
 
+const { validateActionId } = require("../../middleware/action");
+
 router.get("/", (req, res) => {
   actions
     .get(req.params.id)
@@ -18,19 +20,8 @@ router.get("/", (req, res) => {
     });
 });
 
-router.get("/:id", (req, res) => {
-  actions
-    .get(req.params.id)
-    .then((action) => {
-      if (action) {
-        res.status(200).json(action);
-      } else {
-        res.status(404).json({ message: "Action Not Found" });
-      }
-    })
-    .catch((err) => {
-      res.status(500).json({ error: "Error Finding Action" });
-    });
+router.get("/:id", validateActionId(), (req, res) => {
+  res.status(200).json(req.action);
 });
 
 router.post("/", (req, res) => {
@@ -51,7 +42,7 @@ router.post("/", (req, res) => {
     });
 });
 
-router.put("/:id", (req, res) => {
+router.put("/:id", validateActionId(), (req, res) => {
   actions
     .update(req.params.id, req.body)
     .then((action) => {
@@ -66,7 +57,7 @@ router.put("/:id", (req, res) => {
     });
 });
 
-router.delete("/:id", (req, res) => {
+router.delete("/:id", validateActionId(), (req, res) => {
   actions
     .remove(req.params.id)
     .then((action) => {
